@@ -1,4 +1,9 @@
 if (Meteor.isClient) {
+  Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_ONLY'
+  });
+
+  /*
   // counter starts at 0
   Session.setDefault('counter', 0);
 
@@ -14,6 +19,7 @@ if (Meteor.isClient) {
       Session.set('counter', Session.get('counter') + 1);
     }
   });
+  */
 }
 
 if (Meteor.isServer) {
@@ -21,3 +27,4 @@ if (Meteor.isServer) {
     // code to run on server at startup
   });
 }
+
