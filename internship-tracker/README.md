@@ -6,5 +6,5 @@ To view the current design layout, <a href="https://app.moqups.com/kbello121@gma
 
 <h4>Updates</h4>
 <hr>
-11/17/15: Navbar and login options added.
+11/17/15: Navbar and login options added.<br>
 11/19/15: Login completed.
