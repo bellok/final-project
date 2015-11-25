@@ -1,3 +1,11 @@
+Meteor.startup(function(){
+  Router.addRoute('/home', 'homeTemplate');
+  Router.addRoute('/user/:username', 'profileTemplate');
+  Router.addRoute('/contact', 'contactTemplate');
+
+  Router.run();
+});
+
 if (Meteor.isClient) {
   Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
