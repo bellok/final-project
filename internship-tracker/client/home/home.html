@@ -1,0 +1,33 @@
+<template name="home">
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Welcome to Scholarship & Internship Tracker!</h1>
+            <p>The purpose of this application is to provide students the option to keep track of all
+                the scholarships and internships they are interested in. </p>
+            <p><a class="btn btn-primary btn-sm" href="{{pathFor 'about'}}" role="button">Learn more</a></p>
+        </div>
+    </div>
+</template>
+
+<template name="addList">
+    <form>Create a list:
+        <input type="text" placeholder="List name here..." name="listName">
+    </form>
+</template>
+
+<template name="lists">
+    <h2>Lists</h2>
+    {{> addList}}
+    <ul>
+        <ul>
+            {{#each list}}
+            <li><a href="{{pathFor route='listPage'}}">{{name}}</a></li>
+            {{/each}}
+        </ul>
+    </ul>
+</template>
+
+<template name="listPage">
+    <h2>Tasks: {{name}}</h2>
+</template>
+
