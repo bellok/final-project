@@ -1,5 +1,28 @@
 <template name="home">
     {{#if currentUser}}
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">+</button>
+
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add an Entry</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{> addScholarInterns}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--{{> lists}}
         <table class="table table-striped table-hover table-responsive">
             <thead>
             <tr>
@@ -29,7 +52,8 @@
                 <td>july@example.com</td>
             </tr>
             </tbody>
-        </table>
+        </table>-->
+        {{> scholarInterns}}
     {{else}}
         <div class="jumbotron">
             <div class="container">
@@ -42,10 +66,57 @@
     {{/if}}
 </template>
 
-<template name="addScholarship">
-    <form>
-
+<template name="addScholarInterns">
+    <form id="addSI">
+        <fieldset class="form-group">
+            <label for="ScholarInternName">Name</label>
+            <input type="text" class="form-control" id="ScholarInternName">
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="ScholarInternType">Type</label>
+            <select class="form-control" id="ScholarInternType">
+                <option>Scholarship</option>
+                <option>Internship</option>
+            </select>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="ScholarInternDeadline">Deadline</label>
+            <input type="date" class="form-control" id="ScholarInternDeadline">
+        </fieldset>
+        <fieldset class="form-group">
+            <label>Priority</label><br>
+            <input type="radio" name= "ScholarInternPriority" value="low">
+            Low<br>
+            <input type="radio" name="ScholarInternPriority" value="medium">
+            Medium<br>
+            <input type="radio" name="ScholarInternPriority" value="high">
+            High<br>
+        </fieldset>
+        <input type="submit" class="btn btn-default" value="Submit">
     </form>
+</template>
+
+<template name="scholarInterns">
+    <table class="table table-striped table-hover table-responsive">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Deadline</th>
+            <th>Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each scholarIntern}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{type}}</td>
+                <td>{{deadline}}</td>
+                <td>{{priority}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </template>
 
 <template name="addList">

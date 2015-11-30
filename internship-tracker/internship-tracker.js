@@ -7,7 +7,7 @@
 });*/
 
 Lists = new Meteor.Collection('lists');
-Scholarships = new Meteor.Collection('scholarships');
+ScholarInterns = new Meteor.Collection('scholarinterns');
 
 
 
@@ -16,16 +16,27 @@ if (Meteor.isClient) {
         passwordSignupFields: 'USERNAME_ONLY'
     });
 
-    Template.addScholarship.events({
-        'submit form': function(event){ // This still needs to be edited
+    Template.addScholarInterns.events({
+        'submit form': function(event){
             event.preventDefault();
-            var listName = $('[name=listName]').val();
-            Lists.insert({
-                name: listName
+            var ScholarInternName = $('[id=ScholarInternName]').val();
+            var ScholarInternType = $('[id=ScholarInternType]').val();
+            var ScholarInternDeadline = $('[id=ScholarInternDeadline]').val();
+            var ScholarInternPriority = $('[name=ScholarInternPriority]:checked').val();
+            ScholarInterns.insert({
+                name: ScholarInternName,
+                type: ScholarInternType,
+                deadline: ScholarInternDeadline,
+                priority: ScholarInternPriority
             }, function(error, results) {
-                Router.go('listPage', {_id: results});
+                // Do nothing
             });
-            console.log(listName);
+            console.log(ScholarInternName);
+            console.log(ScholarInternType);
+            console.log(ScholarInternDeadline);
+            console.log(ScholarInternPriority);
+            document.getElementById("addSI").reset();
+            $('#myModal').modal('hide');
         }
     });
 
@@ -45,6 +56,12 @@ if (Meteor.isClient) {
     Template.lists.helpers({
         'list': function(){
             return Lists.find({}, {sort: {name: 1}});
+        }
+    });
+
+    Template.scholarInterns.helpers({
+        'scholarIntern': function(){
+            return ScholarInterns.find({}, {sort: {name: 1}});
         }
     });
 }
