@@ -11,4 +11,5 @@ To view the current design layout, <a href="https://app.moqups.com/kbello121@gma
 11/17/15: Navbar and login options added.<br>
 11/19/15: Login completed.<br>
 11/25/15: Added routing to application and began building the basis for the database that will keep track of the 
-scholarships and internships.
+scholarships and internships.<br>
+11/30/15: Finished adding the basis for interacting with the database by adding entries.
