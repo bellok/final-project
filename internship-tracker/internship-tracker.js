@@ -7,10 +7,26 @@
 });*/
 
 Lists = new Meteor.Collection('lists');
+Scholarships = new Meteor.Collection('scholarships');
+
+
 
 if (Meteor.isClient) {
     Accounts.ui.config({
         passwordSignupFields: 'USERNAME_ONLY'
+    });
+
+    Template.addScholarship.events({
+        'submit form': function(event){ // This still needs to be edited
+            event.preventDefault();
+            var listName = $('[name=listName]').val();
+            Lists.insert({
+                name: listName
+            }, function(error, results) {
+                Router.go('listPage', {_id: results});
+            });
+            console.log(listName);
+        }
     });
 
     Template.addList.events({
