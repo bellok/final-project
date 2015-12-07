@@ -1,58 +1,30 @@
 <template name="home">
     {{#if currentUser}}
-        <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">+</button>
-
-        <!-- Modal -->
-        <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Add an Entry</h4>
-                    </div>
-                    <div class="modal-body">
-                        {{> addScholarInterns}}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 id="mainTitle">Scholarship & Internship Tracker</h1>
+            </div><!--end of col-lg-12-->
+        </div><!--end of row-->
+        <div class="addEntry">
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#myModal">
+                Add Entry
+            </button>
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add an Entry</h4>
+                        </div>
+                        <div class="modal-body">
+                            {{> addScholarInterns}}
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
-        <!--{{> lists}}
-        <table class="table table-striped table-hover table-responsive">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Deadline</th>
-                <th>Priority</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-            </tr>
-            <tr>
-                <td>Mary</td>
-                <td>Moe</td>
-                <td>mary@example.com</td>
-                <td>mary@example.com</td>
-            </tr>
-            <tr>
-                <td>July</td>
-                <td>Dooley</td>
-                <td>july@example.com</td>
-                <td>july@example.com</td>
-            </tr>
-            </tbody>
-        </table>-->
         {{> scholarInterns}}
     {{else}}
         <div class="jumbotron">
@@ -62,6 +34,14 @@
                     the scholarships and internships they are interested in. </p>
                 <p><a class="btn btn-primary btn-sm" href="{{pathFor 'about'}}" role="button">Learn more</a></p>
             </div>
+        </div>
+    {{/if}}
+</template>
+
+<template name="emptyList">
+    {{#if scholarCount}}
+        <div class="empty">
+            <h3>There are currently no entries. Add an entry above by clicking the '+' button.</h3>
         </div>
     {{/if}}
 </template>
@@ -84,23 +64,32 @@
             <input type="date" class="form-control" id="ScholarInternDeadline">
         </fieldset>
         <fieldset class="form-group">
+            <label for="ScholarInternDescription">Description</label>
+            <input type="text" class="form-control" id="ScholarInternDescription">
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="ScholarInternWebsite">Website</label>
+            <input type="text" class="form-control" id="ScholarInternWebsite">
+        </fieldset>
+        <fieldset class="form-group">
             <label>Priority</label><br>
-            <input type="radio" name= "ScholarInternPriority" value="low">
+            <input type="radio" name= "ScholarInternPriority" value="Low">
             Low<br>
-            <input type="radio" name="ScholarInternPriority" value="medium">
+            <input type="radio" name="ScholarInternPriority" value="Medium">
             Medium<br>
-            <input type="radio" name="ScholarInternPriority" value="high">
+            <input type="radio" name="ScholarInternPriority" value="High">
             High<br>
         </fieldset>
-        <input type="submit" class="btn btn-default" value="Submit">
+        <input type="submit" class="btn btn-primary" value="Submit">
+        <button type="button" class="btn btn-default backButton" data-dismiss="modal">Close</button>
     </form>
 </template>
 
 <template name="scholarInterns">
-    <table class="table table-striped table-hover table-responsive">
+    <!--<table class="table table-striped table-hover table-responsive">
         <thead>
         <tr>
-            <th>Name</th>
+            <th>Name <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></th>
             <th>Type</th>
             <th>Deadline</th>
             <th>Priority</th>
@@ -109,14 +98,24 @@
         <tbody>
         {{#each scholarIntern}}
             <tr>
-                <td>{{name}}</td>
+                <td><a href="/entries/{{_id}}">{{name}}</a></td>
                 <td>{{type}}</td>
                 <td>{{deadline}}</td>
                 <td>{{priority}}</td>
+                <td><button class="btn btn-default btn-sm" id="delete">
+                    <span class="glyphicon glyphicon-remove"></span></button>
+                </td>
             </tr>
         {{/each}}
         </tbody>
-    </table>
+    </table>-->
+    {{> reactiveTable settings=settings}}
+    {{> emptyList}}
+</template>
+
+<template name="deleteEntry">
+    <button class="btn btn-default btn-sm" id="delete">
+        <span class="glyphicon glyphicon-remove"></span></button>
 </template>
 
 <template name="addList">
@@ -137,7 +136,65 @@
     </ul>
 </template>
 
-<template name="listPage">
-    <h2>Tasks: {{name}}</h2>
+<template name="viewScholarInterns">
+    <div class="entryBox">
+        <h4>Name:</h4>
+        <p>{{name}}</p>
+        <h4>Type:</h4>
+        <p>{{type}}</p>
+        <h4>Deadline:</h4>
+        <p>{{deadline}}</p>
+        <h4>Description:</h4>
+        <p>{{description}}</p>
+        <h4>Website:</h4>
+        <p>{{website}}</p>
+        <h4>Priority:</h4>
+        <p>{{priority}}</p>
+        <a href="/entries/{{_id}}/edit"><input type="button" class="btn btn-primary" value="Edit"></a>
+        <a href="{{pathFor route='home'}}"><input type="button" class="btn btn-default backButton" value="Back"></a>
+    </div>
+</template>
+
+<template name="editScholarInterns">
+    <div class="entryBox">
+        <form id="editSI">
+            <fieldset class="form-group">
+                <label for="ScholarInternName">Name</label>
+                <input type="text" class="form-control" value="{{name}}" id="ScholarInternNameEdit">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ScholarInternType">Type</label>
+                <select class="form-control" value="{{type}}" id="ScholarInternTypeEdit">
+                    <option>Scholarship</option>
+                    <option>Internship</option>
+                </select>
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ScholarInternDeadline">Deadline</label>
+                <input type="date" class="form-control" value="{{deadline}}" id="ScholarInternDeadlineEdit">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ScholarInternDescription">Description</label>
+                <input type="text" class="form-control" value="{{description}}" id="ScholarInternDescriptionEdit">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="ScholarInternWebsite">Website</label>
+                <input type="text" class="form-control" value="{{website}}" id="ScholarInternWebsiteEdit">
+            </fieldset>
+            <fieldset class="form-group">
+                <label>Priority</label><br>
+                <input type="radio" name= "ScholarInternPriorityEdit" value="Low">
+                Low<br>
+                <input type="radio" name="ScholarInternPriorityEdit" value="Medium">
+                Medium<br>
+                <input type="radio" name="ScholarInternPriorityEdit" value="High">
+                High<br>
+                <small>Only select a priority if you wish to change it to something else</small>
+            </fieldset>
+            <input type="submit" class="btn btn-primary" value="Save">
+            <a href="/entries/{{_id}}"><input type="button" class="btn btn-default backButton"
+                                                           value="Back"></a>
+        </form>
+    </div>
 </template>
 

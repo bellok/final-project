@@ -7,11 +7,20 @@ Router.map(function() {
     this.route('about', {path:'/about'});
 });
 
-Router.route('/list/:_id', {
-    name: 'listPage',
-    template: 'listPage',
+Router.route('/entries/:_id', {
+    name: 'viewScholarInterns',
+    template: 'viewScholarInterns',
     data: function(){
-        var currentList = this.params._id;
-        return Lists.findOne({_id: currentList});
+        var currentEntry = this.params._id;
+        return ScholarInterns.findOne({_id: currentEntry});
+    }
+});
+
+Router.route('/entries/:_id/edit', {
+    name: 'editScholarInterns',
+    template: 'editScholarInterns',
+    data: function(){
+        var currentEntry = this.params._id;
+        return ScholarInterns.findOne({_id: currentEntry});
     }
 });
