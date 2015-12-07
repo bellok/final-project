@@ -1,67 +1,52 @@
-/*Meteor.startup(function(){
-  Router.addRoute('/home', 'homeTemplate');
-  Router.addRoute('/user/:username', 'profileTemplate');
-  Router.addRoute('/contact', 'contactTemplate');
-
-  Router.run();
-});*/
-
-Lists = new Meteor.Collection('lists');
 ScholarInterns = new Meteor.Collection('scholarinterns');
 
+Meteor.methods({
+    addEntry: function(ScholarInternName, ScholarInternType, ScholarInternDeadline,
+                       ScholarInternDescription, ScholarInternWebsite, ScholarInternPriority) {
+        var currentUser = Meteor.userId();
+        ScholarInterns.insert({
+            name: ScholarInternName,
+            type: ScholarInternType,
+            deadline: ScholarInternDeadline,
+            description: ScholarInternDescription,
+            website: ScholarInternWebsite,
+            priority: ScholarInternPriority,
+            createdBy: currentUser
+        }, function (error, results) {
+            // Do nothing
+        });
+    },
+    editEntry: function (editedProperties, currentID) {
+        ScholarInterns.update(currentID, {$set: editedProperties}, function (error) {
+            if (error) {
+                // display the error to the user
+                alert(error.reason);
+            } else {
+                // do nothing
+            }
+        });
+    },
+    deleteEntry: function (entry) {
+        ScholarInterns.remove(entry);
+    }
+});
 
+if (Meteor.isServer) {
+    Meteor.startup(function () {
+        // code to run on server at startup
+    });
+
+    Meteor.publish("ScholarInterns", function () {
+        return ScholarInterns.find();
+    })
+}
 
 if (Meteor.isClient) {
+    Meteor.subscribe("ScholarInterns");
+
     Accounts.ui.config({
         passwordSignupFields: 'USERNAME_ONLY'
     });
-
-    //Meteor.methods({
-    //   addEntry: function(event) {
-    //       var currentUser = Meteor.userId();
-    //       ScholarInterns.insert({
-    //           name: $('[id=ScholarInternName]'),
-    //           type: $('[id=ScholarInternDeadline]'),
-    //           deadline: $('[id=ScholarInternDescription]'),
-    //           description: $('[id=ScholarInternWebsite]'),
-    //           website: $('[id=ScholarInternWebsite]'),
-    //           priority: $('[name=ScholarInternPriority]:checked'),
-    //           createdBy: currentUser
-    //       }, function(error, results) {
-    //           // Do nothing
-    //       });
-    //   },
-    //   editEntry: function (entryID) {
-    //       event.preventDefault();
-    //       var editedProperties = {
-    //           name: $(event.target).find('[id=ScholarInternNameEdit]'),
-    //           type: $(event.target).find('[id=ScholarInternTypeEdit]'),
-    //           deadline: $(event.target).find('[id=ScholarInternDeadlineEdit]'),
-    //           description: $(event.target).find('[id=ScholarInternDescriptionEdit]'),
-    //           website: $(event.target).find('[id=ScholarInternWebsiteEdit]'),
-    //           priority: $(event.target).find('[name=ScholarInternPriorityEdit]:checked')
-    //       }
-    //       var currentID = entryID._id;
-    //       ScholarInterns.update(currentID, {$set: editedProperties}, function(error) {
-    //           if (error) {
-    //               // display the error to the user
-    //               alert(error.reason);
-    //           } else {
-    //
-    //           }
-    //       });
-    //       Router.go('/entries/' + currentID);
-    //   },
-    //   deleteEntry: function (entryID) {
-    //       var entry = entryID._id;
-    //       if (event.target.className == "name") {
-    //           Router.go('/entries/' + entry);
-    //       }
-    //       if (event.target.className == "glyphicon glyphicon-remove" || event.target.className == 'btn btn-default btn-sm deleteEntry') {
-    //           ScholarInterns.remove(entry);
-    //       }
-    //   }
-    //});
 
     Template.addScholarInterns.events({
         'submit form': function (event) {
@@ -72,22 +57,8 @@ if (Meteor.isClient) {
             var ScholarInternDescription = $('[id=ScholarInternDescription]').val();
             var ScholarInternWebsite = $('[id=ScholarInternWebsite]').val();
             var ScholarInternPriority = $('[name=ScholarInternPriority]:checked').val();
-            var currentUser = Meteor.userId();
-            ScholarInterns.insert({
-                name: ScholarInternName,
-                type: ScholarInternType,
-                deadline: ScholarInternDeadline,
-                description: ScholarInternDescription,
-                website: ScholarInternWebsite,
-                priority: ScholarInternPriority,
-                createdBy: currentUser
-            }, function (error, results) {
-                // Do nothing
-            });
-            console.log(ScholarInternName);
-            console.log(ScholarInternType);
-            console.log(ScholarInternDeadline);
-            console.log(ScholarInternPriority);
+            Meteor.call("addEntry", ScholarInternName, ScholarInternType, ScholarInternDeadline,
+                ScholarInternDescription, ScholarInternWebsite, ScholarInternPriority);
             document.getElementById("addSI").reset();
             $('#myModal').modal('hide');
         }
@@ -103,16 +74,9 @@ if (Meteor.isClient) {
                 description: $(event.target).find('[id=ScholarInternDescriptionEdit]').val(),
                 website: $(event.target).find('[id=ScholarInternWebsiteEdit]').val(),
                 priority: $(event.target).find('[name=ScholarInternPriorityEdit]:checked').val()
-            }
+            };
             var currentID = this._id;
-            ScholarInterns.update(currentID, {$set: editedProperties}, function (error) {
-                if (error) {
-                    // display the error to the user
-                    alert(error.reason);
-                } else {
-
-                }
-            });
+            Meteor.call("editEntry", editedProperties, currentID);
             Router.go('/entries/' + currentID);
         }
     });
@@ -145,28 +109,20 @@ if (Meteor.isClient) {
     Template.scholarInterns.events({
         'click .reactive-table tbody tr': function (event) {
             event.preventDefault();
-            var post = this._id;
-            console.log(event);
+            var entry = this._id;
             if (event.target.className == "name") {
-                Router.go('/entries/' + post);
+                Router.go('/entries/' + entry);
             }
             if (event.target.className == "glyphicon glyphicon-remove" || event.target.className == 'btn btn-default btn-sm deleteEntry') {
-                ScholarInterns.remove(this._id);
+                Meteor.call("deleteEntry", entry);
             }
         }
     });
 
     Template.emptyList.helpers({
         'scholarCount': function () {
-            console.log('The number of entries is ' + ScholarInterns.find().count());
             return ScholarInterns.find().count() == false;
         }
-    });
-}
-
-if (Meteor.isServer) {
-    Meteor.startup(function () {
-        // code to run on server at startup
     });
 }
 
