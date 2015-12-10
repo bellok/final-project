@@ -42,6 +42,46 @@ if (Meteor.isServer) {
 }
 
 if (Meteor.isClient) {
+    var Schemas = {};
+    Schemas.ScholarIntern = new SimpleSchema({
+        name: {
+            type: String,
+            label: "Title",
+            optional: true
+        },
+        type: {
+            type: String,
+            label: "Type",
+            optional: true
+        },
+        deadline: {
+            type: String,
+            label: "Deadline (yyyy-mm-dd)",
+            optional: true
+        },
+        description: {
+            type: String,
+            label: "Description",
+            optional: true
+        },
+        website: {
+            type: String,
+            label: "Website",
+            optional: true
+        },
+        priority: {
+            type: String,
+            label: "Priority",
+            optional: true
+        },
+        createdBy: {
+            type: String,
+            label: "Created By",
+            optional: true
+        }
+    });
+    ScholarInterns.attachSchema(Schemas.ScholarIntern);
+
     Meteor.subscribe("ScholarInterns");
 
     Accounts.ui.config({
@@ -84,7 +124,6 @@ if (Meteor.isClient) {
     Template.scholarInterns.helpers({
         settings: function () {
             return {
-                collection: ScholarInterns,
                 rowsPerPage: 10,
                 showFilter: true,
                 showRowCount: true,
@@ -103,6 +142,9 @@ if (Meteor.isClient) {
                     }
                 ]
             };
+        },
+        ScholarInternsSubset: function () {
+            return ScholarInterns.find({createdBy: Meteor.userId()});
         }
     });
 
@@ -121,8 +163,18 @@ if (Meteor.isClient) {
 
     Template.emptyList.helpers({
         'scholarCount': function () {
-            return ScholarInterns.find().count() == false;
+            return ScholarInterns.find({createdBy: Meteor.userId()}).count() == false;
         }
     });
 }
 
+/*
+_id: "4daYparHkdmtewJdQ"
+createdBy: "XgdgFRRNiuZrgL7Yn"
+deadline: "9999-01-02"
+description: "testing "
+name: "hello"
+priority: "High"
+type: "Scholarship"
+website: "google"
+*/
